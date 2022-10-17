@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 
 class ResultKonversi extends StatelessWidget {
   final double result;
-  final String jenis;
 
-  const ResultKonversi({super.key, required this.result, required this.jenis});
+  const ResultKonversi({
+    Key? key,
+    required this.result,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
-          "Suhu Dalam $jenis",
+          "Hasil",
           style: TextStyle(fontSize: 15),
         ),
         Text(

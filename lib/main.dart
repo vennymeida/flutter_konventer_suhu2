@@ -2,7 +2,9 @@ import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_konventer_suhu2/widget/button.dart';
+import 'package:flutter_konventer_suhu2/widget/dropdown.dart';
 import 'package:flutter_konventer_suhu2/widget/result.dart';
+import 'package:flutter_konventer_suhu2/widget/history.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,15 +37,29 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _controllerCelcius = TextEditingController();
   double _inputCelcius = 0;
-  double _kelvin = 0;
-  double _reamur = 0;
+  double result = 0;
+  var jenisSuhu = ["Kelvin", "Reamur"];
+  var selectedSuhu = "Kelvin";
+  List<String> history = <String>[];
+
+  setSelectedSuhu(String value) {
+    setState(() {
+      selectedSuhu = value.toString();
+    });
+  }
 
   konventerSuhu() {
     setState(() {
       if (_controllerCelcius.text.isNotEmpty) {
         _inputCelcius = double.parse(_controllerCelcius.text);
-        _kelvin = _inputCelcius + 273.15;
-        _reamur = _inputCelcius * 0.8;
+        if (selectedSuhu == "Kelvin") {
+          result = _inputCelcius + 273;
+        }
+        if (selectedSuhu == "Reamur") {
+          result = _inputCelcius * 0.8;
+        }
+
+        history.add("$selectedSuhu : $result");
       }
     });
   }
@@ -62,32 +78,27 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextFormField(
               keyboardType: TextInputType.number,
               controller: _controllerCelcius,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Expanded(
-                  child: ResultKonversi(
-                    result: _kelvin,
-                    jenis: 'Kelvin',
-                  ),
-                ),
-                Expanded(
-                  child: ResultKonversi(
-                    result: _reamur,
-                    jenis: 'Reamur',
-                  ),
-                ),
-              ],
+            DropdownSuhu(
+              jenisSuhu: jenisSuhu,
+              selectedSuhu: selectedSuhu,
+              setSelectedSuhu: setSelectedSuhu,
+            ),
+            ResultKonversi(
+              result: result,
             ),
             ButtonKonversi(
               konversi: konventerSuhu,
             ),
+            const Text(
+              "Riwayat Konversi",
+              style: TextStyle(fontSize: 20),
+            ),
+            History(history: history),
           ],
         ),
       ),
